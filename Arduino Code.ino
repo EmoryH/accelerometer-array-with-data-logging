@@ -34,7 +34,10 @@ const int Sens3 = A3;
 
 const int sens = 300; // mv/g from spec sheet
 
-const int z_off = 520;
+const int s1_off = 520;
+const int s2_off = 520;
+const int s3_off = 520;
+const int s4_off = 520;
 
 const int button = 5;  //input pin for push button
 int val = 0;  
@@ -167,10 +170,10 @@ void loop()
   int s3raw = analogRead(Sens3);    // read analog input for Sensor 3/pin A2
   int s4raw = analogRead(Sens4);    // read analog input for Sensor 4/pin A3
   
-  float S1_g = (s1raw - z_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 1/pin A0
-  float S2_g = (s2raw - z_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 2/pin A1 
-  float S3_g = (s3raw - z_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 3/pin A2
-  float S4_g = (s4raw - z_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 4/pin A3 
+  float S1_g = (s1raw - s1_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 1/pin A0
+  float S2_g = (s2raw - s2_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 2/pin A1 
+  float S3_g = (s3raw - s3_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 3/pin A2
+  float S4_g = (s4raw - s4_off) * (3300 / 1023.0) / sens; // calculate acceleration for Sensor 4/pin A3 
 
   
   val = digitalRead(button);
@@ -179,42 +182,48 @@ void loop()
   if (val == HIGH){
     // log time
     logfile.print(m);           // milliseconds since start
-    logfile.print("\t "); 
-    logfile.print(now.unixtime()); // seconds since 1/1/1970
-    logfile.print("\t ");
-    logfile.print('"');
-    logfile.print(now.year(), DEC);
-    logfile.print("/");
-    logfile.print(now.month(), DEC);
-    logfile.print("/");
-    logfile.print(now.day(), DEC);
-    logfile.print(" ");
-    logfile.print(now.hour(), DEC);
-    logfile.print(":");
-    logfile.print(now.minute(), DEC);
-    logfile.print(":");
-    logfile.print(now.second(), DEC);
-    logfile.print('"');
-    logfile.print(" S1 (G), S2 (G), S3 (G), S4 (G): ");
-    logfile.print("\t");
+    //logfile.print("\t "); 
+    //logfile.print(now.unixtime()); // seconds since 1/1/1970
+    //logfile.print("\t ");
+    //logfile.print('"');
+    //logfile.print(now.year(), DEC);
+    //logfile.print("/");
+    //logfile.print(now.month(), DEC);
+    //logfile.print("/");
+    //logfile.print(now.day(), DEC);
+    //logfile.print(" ");
+    //logfile.print(now.hour(), DEC);
+    //logfile.print(":");
+    //logfile.print(now.minute(), DEC);
+    //logfile.print(":");
+    //logfile.print(now.second(), DEC);
+    //logfile.print('"');
+    //logfile.print(" S1 (G), S2 (G), S3 (G), S4 (G): ");
+    logfile.print(",");
     logfile.print(S1_g);   // print the acceleration in the Z axis - SENSOR 1
-    logfile.print("\t");   // prints a space between the numbers
+    logfile.print(",");   // prints a space between the numbers
     logfile.print(S2_g);   // print the acceleration in the Z axis - SENSOR 2
-    logfile.print("\t");   // prints a space between the numbers 
+    logfile.print(",");   // prints a space between the numbers 
     logfile.print(S3_g);   // print the acceleration in the Z axis - SENSOR 3
-    logfile.print("\t");   // prints a space between the numbers
+    logfile.print(",");   // prints a space between the numbers
     logfile.print(S4_g);   // print the acceleration in the Z axis - SENSOR 4
     
     #if ECHO_TO_SERIAL  
 
-      Serial.print(" S1 (G), S2 (G), S3 (G), S4 (G): ");
+      //Serial.print(" S1 (G), S2 (G), S3 (G), S4 (G): ");
+      Serial.print("S1 ");  //labels the sensor
       Serial.print(S1_g);   // print the acceleration in the Z axis - SENSOR 1
       Serial.print("\t");   // prints a space between the numbers
+      Serial.print("S2 ");  //labels the sensor
       Serial.print(S2_g);   // print the acceleration in the Z axis - SENSOR 2
       Serial.print("\t");   // prints a space between the numbers 
+      Serial.print("S3 ");  //labels the sensor
       Serial.print(S3_g);   // print the acceleration in the Z axis - SENSOR 3
       Serial.print("\t");   // prints a space between the numbers
+      Serial.print("S4 ");  //labels the sensor
       Serial.print(S4_g);   // print the acceleration in the Z axis - SENSOR 4
+      Serial.print("\n");   // prints a new line
+    
 
     #endif // ECHO_TO_SERIAL
     //delay(100);              // wait 100ms for next reading
