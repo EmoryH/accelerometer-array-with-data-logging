@@ -18,3 +18,7 @@ Other stuff:
 * Breadboard
 * Jumper wires (m-m)
 * SD card
+
+
+
+based on the arduino accelerometer and data logger by wlamont
