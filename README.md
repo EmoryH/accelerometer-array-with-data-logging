@@ -13,7 +13,7 @@
 
 Other stuff:
 
-* 30AWG solid core wire
+* 24AWG solid core wire
 * Soldering Iron 
 * Breadboard
 * Jumper wires (m-m)
