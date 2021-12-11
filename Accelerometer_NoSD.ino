@@ -3,7 +3,7 @@
 #include "RTClib.h"
 
 // how many milliseconds between grabbing data and logging it. 1000 ms is once a second
-#define LOG_INTERVAL 1.8181818181818 // mills between entries (reduce to take more/faster data) (z-axis limit is 550Hz or 1.81818181818...)
+#define LOG_INTERVAL 5000 // mills between entries (reduce to take more/faster data) (z-axis limit is 550Hz or 1.81818181818...)
 
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
@@ -51,7 +51,7 @@ void error(char *str)
 void setup()
 {
   analogReference(EXTERNAL);
-  Serial.begin(115200);      // sets the serial port to 115200
+  Serial.begin(9600);      // sets the serial port to 115200
   pinMode(button, INPUT);
 
    // use debugging LEDs
@@ -71,13 +71,17 @@ void setup()
   #endif  //ECHO_TO_SERIAL
   }
      
-#if ECHO_TO_SERIAL
+/* #if ECHO_TO_SERIAL
   Serial.println("millis \t stamp \t datetime \n");
-#endif //ECHO_TO_SERIAL
+#endif //ECHO_TO_SERIAL */
  
   // If you want to set the aref to something other than 5v
   analogReference(EXTERNAL);
-  
+
+  Serial.println("CLEARDATA");
+
+  Serial.println("LABEL,Time (ms),Sensor 1 (g),Sensor 2 (g),Sensor 3 (g),Sensor 4 (g)");
+
 }
 
 void loop()
@@ -92,26 +96,6 @@ void loop()
 
   // fetch the time
   now = RTC.now();
-
-  #if ECHO_TO_SERIAL
-    Serial.print(m);         // milliseconds since start
-    Serial.print("\t "); 
-    Serial.print(now.unixtime()); // seconds since 1/1/1970
-    Serial.print("\t ");
-    Serial.print('"');
-    Serial.print(now.year(), DEC);
-    Serial.print("/");
-    Serial.print(now.month(), DEC);
-    Serial.print("/");
-    Serial.print(now.day(), DEC);
-    Serial.print(" ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(":");
-    Serial.print(now.minute(), DEC);
-    Serial.print(":");
-    Serial.print(now.second(), DEC);
-    Serial.print('"');
-  #endif //ECHO_TO_SERIAL
 
   int s1raw = analogRead(Sens1);    // read analog input for Sensor 1/pin A0
   int s2raw = analogRead(Sens2);    // read analog input for Sensor 2/pin A1
@@ -132,27 +116,32 @@ void loop()
     #if ECHO_TO_SERIAL  
 
       //Serial.print(" S1 (G), S2 (G), S3 (G), S4 (G): ");
-      Serial.print("S1 ");  //labels the sensor
+      Serial.print("DATA,");
+      Serial.print(m);         // milliseconds since start
+      Serial.print(",");   // prints a comma between the numbers
+      //Serial.print("S1 ");  //labels the sensor
       Serial.print(S1_g);   // print the acceleration in the Z axis - SENSOR 1
-      Serial.print("\t");   // prints a space between the numbers
-      Serial.print("S2 ");  //labels the sensor
+      Serial.print(",");   // prints a comma between the numbers
+      //Serial.print("S2 ");  //labels the sensor
       Serial.print(S2_g);   // print the acceleration in the Z axis - SENSOR 2
-      Serial.print("\t");   // prints a space between the numbers 
-      Serial.print("S3 ");  //labels the sensor
+      Serial.print(",");   // prints a comma between the numbers 
+      //Serial.print("S3 ");  //labels the sensor
       Serial.print(S3_g);   // print the acceleration in the Z axis - SENSOR 3
-      Serial.print("\t");   // prints a space between the numbers
-      Serial.print("S4 ");  //labels the sensor
+      Serial.print(",");   // prints a comma between the numbers
+      //Serial.print("S4 ");  //labels the sensor
       Serial.print(S4_g);   // print the acceleration in the Z axis - SENSOR 4
       Serial.print("\n");   // prints a new line
 
 
     #endif // ECHO_TO_SERIAL
     //delay(100);              // wait 100ms for next reading
+    
   } else {
     #if ECHO_TO_SERIAL
       Serial.println("\t Button not pushed \n");
       delay(10);
     #endif
   }
-  
+
+delay(LOG_INTERVAL);
 }
